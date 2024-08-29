@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mx.com.dmart.mybatis.persistence.LibroMapper">
+
+   <resultMap type="mx.com.dmart.mybatis.domain.Libro" id="LibroResult">
+       <id property="idLibro" column="id_libro"/>
+       <result property="titulo" column="titulo"/>
+       <result property="estado" column="estado"/>
+       <association property="autor" resultMap="AutorResult"></association>
+   </resultMap>
+   
+   <resultMap type="mx.com.dmart.mybatis.domain.Autor" id="AutorResult">
+       <id property="idAutor" column="aut_id"/>
+       <result property="nombres" column="aut_nombres"/>
+   </resultMap>
+    
+    <select id="buscarTodos" resultMap="LibroResult" statementType="CALLABLE">
+       CALL paLibroListar();
+    </select>
+    
+    <select id="buscar" parameterType="string" resultMap="LibroResult">
+        <bind name="pattern" value="'%'+titulo+'%'" />
+        SELECT li.id_libro, li.titulo, li.id_autor as aut_id, li.estado, aut.nombres as aut_nombres
+		FROM libro li		
+		INNER JOIN autor aut ON aut.id_autor = li.id_autor
+		WHERE li.estado = TRUE
+		<if test="titulo !=null">
+		   AND li.titulo like #{pattern}
+		</if>
+    </select>
+    
+    <insert id="guardar" parameterType="mx.com.dmart.mybatis.domain.Libro" statementType="CALLABLE">
+       CALL paLibroInsertar(#{titulo}, #{autor.idAutor},#{estado});
+    </insert>
+    
+    <update id="actualizar" parameterType="mx.com.dmart.mybatis.domain.Libro" statementType="CALLABLE">
+       CALL paLibroActualizar(#{idLibro},#{titulo},#{autor.idAutor});
+    </update>
+
+
+</mapper>

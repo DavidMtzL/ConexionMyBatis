@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mx.com.dmart.mybatis.persistence.UsuarioMapper">
+      
+      <select id="getAllUsers" resultType="mx.com.dmart.mybatis.domain.Usuario">
+             SELECT id, firstName, lastName, email FROM  usuario
+      </select>
+      
+      <insert id="insertUser" parameterType="mx.com.dmart.mybatis.domain.Usuario">
+           INSERT INTO usuario
+           (firstName, lastName, email)
+           VALUE (#{firstName},#{lastName}, #{email})
+      </insert>
+      
+      <update id="updateUser" parameterType="mx.com.dmart.mybatis.domain.Usuario">
+          UPDATE usuario SET
+          firtName = #{firstName},
+          lastName=#{lastName},
+          email=#{email},
+          WHERE ID= #{id}
+          
+      </update>
+
+</mapper>
